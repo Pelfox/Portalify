@@ -1,6 +1,6 @@
 # Portalify
 
-A lightweight and customizable Minecraft plugin for Paper 1.21.8 that allows players to create teleportation portals using End Portal Frames.
+A lightweight Minecraft plugin for Paper 1.21.8 that allows players to create teleportation portals using End Portal Frames.
 
 ### Features
 

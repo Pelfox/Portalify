@@ -2,9 +2,8 @@ package dev.pelfox.portalify.listeners;
 
 import dev.pelfox.portalify.Portalify;
 import dev.pelfox.portalify.animation.PortalExteriorAnimator;
-import dev.pelfox.portalify.data.TeleportPortalData;
+import dev.pelfox.portalify.data.PortalData;
 import dev.pelfox.portalify.persistence.WorldDataContainer;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -31,7 +30,7 @@ public class PlayerPlaceBlockListener implements Listener {
             return;
         }
 
-        dataContainer.saveData(block.getLocation(), new TeleportPortalData("", NamedTextColor.WHITE, block.getLocation(), null));
+        dataContainer.saveData(block.getLocation(), new PortalData("", block.getLocation(), null));
         this.plugin.registerAnimator(new PortalExteriorAnimator(this.plugin,  block.getLocation()));
     }
 }

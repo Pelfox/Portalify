@@ -21,7 +21,7 @@ tasks {
         minecraftVersion(project.property("minecraft.version") as String)
         def jvmArgsEnv = System.getenv("PAPER_DEV_JVM_ARGS")
         if (jvmArgsEnv != null && !jvmArgsEnv.trim().isEmpty()) {
-            jvmArgs = jvmArgsEnv.split("\\s+")
+            jvmArgs(jvmArgsEnv.split("\\s+"))
         }
     }
 }

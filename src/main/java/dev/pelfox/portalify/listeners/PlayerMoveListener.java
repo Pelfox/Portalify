@@ -1,7 +1,7 @@
 package dev.pelfox.portalify.listeners;
 
 import dev.pelfox.portalify.animation.PortalTeleportAnimator;
-import dev.pelfox.portalify.data.TeleportPortalData;
+import dev.pelfox.portalify.data.PortalData;
 import dev.pelfox.portalify.persistence.WorldDataContainer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,7 +35,7 @@ public class PlayerMoveListener implements Listener {
         }
 
         WorldDataContainer dataContainer = new WorldDataContainer(player.getWorld());
-        TeleportPortalData portalData = dataContainer.getData(location);
+        PortalData portalData = dataContainer.getData(location);
 
         if (portalData == null || portalData.getDestination() == null) {
             return;

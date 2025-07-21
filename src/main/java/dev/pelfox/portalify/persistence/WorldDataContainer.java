@@ -2,7 +2,7 @@ package dev.pelfox.portalify.persistence;
 
 import dev.pelfox.portalify.utils.KeyBuilderUtils;
 import dev.pelfox.portalify.data.PortalDataType;
-import dev.pelfox.portalify.data.TeleportPortalData;
+import dev.pelfox.portalify.data.PortalData;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -26,12 +26,12 @@ public class WorldDataContainer implements IDataContainer {
     }
 
     @Override
-    public @Nullable TeleportPortalData getData(@NotNull Location location) {
+    public @Nullable PortalData getData(@NotNull Location location) {
         return this.container.get(KeyBuilderUtils.keyFromLocation(location), new PortalDataType());
     }
 
     @Override
-    public void saveData(@NotNull Location location, @NotNull TeleportPortalData data) {
+    public void saveData(@NotNull Location location, @NotNull PortalData data) {
         this.container.set(KeyBuilderUtils.keyFromLocation(location), new PortalDataType(), data);
     }
 
@@ -42,8 +42,8 @@ public class WorldDataContainer implements IDataContainer {
     }
 
     @Override
-    public @NotNull List<TeleportPortalData> getPortalsData() {
-        List<TeleportPortalData> portalsData = new ArrayList<>();
+    public @NotNull List<PortalData> getPortalsData() {
+        List<PortalData> portalsData = new ArrayList<>();
         for (NamespacedKey key : this.container.getKeys()) {
             if (!KeyBuilderUtils.isValidKey(key)) {
                 continue;

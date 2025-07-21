@@ -3,7 +3,7 @@ package dev.pelfox.portalify.listeners;
 import dev.pelfox.portalify.utils.KeyBuilderUtils;
 import dev.pelfox.portalify.Portalify;
 import dev.pelfox.portalify.animation.PortalDestinationAnimator;
-import dev.pelfox.portalify.data.TeleportPortalData;
+import dev.pelfox.portalify.data.PortalData;
 import dev.pelfox.portalify.persistence.WorldDataContainer;
 import io.papermc.paper.connection.PlayerGameConnection;
 import io.papermc.paper.dialog.Dialog;
@@ -60,7 +60,7 @@ public class PlayerClickBlockListener implements Listener {
         }
 
         WorldDataContainer dataContainer = new WorldDataContainer(block.getWorld());
-        TeleportPortalData portalData = dataContainer.getData(block.getLocation());
+        PortalData portalData = dataContainer.getData(block.getLocation());
 
         if (portalData == null) {
             LOGGER.warn("Player clicked on an portal block without linked data at {}", block.getLocation());
@@ -72,17 +72,17 @@ public class PlayerClickBlockListener implements Listener {
 
         // getting all other portals in the world to populate the destination options
         List<SingleOptionDialogInput.OptionEntry> portalsOptions = dataContainer.getPortalsData().stream()
-                .filter(data -> !data.getId().equals(portalData.getId()))
+                .filter(data -> !data.getName().equals(portalData.getName()))
                 .map(data -> SingleOptionDialogInput.OptionEntry.create(
                         KeyBuilderUtils.keyFromLocation(data.getOrigin()).asString(),
-                        !data.getId().isBlank() ? Component.text(data.getId()) : GlobalTranslator.render(Component.translatable("editor.buttons.no_name"), player.locale()), // TODO: replace with location?
+                        !data.getName().isBlank() ? Component.text(data.getName()) : GlobalTranslator.render(Component.translatable("editor.buttons.no_name"), player.locale()), // TODO: replace with location?
                         portalData.getDestination() != null && data.getOrigin().equals(portalData.getDestination())
                 ))
                 .toList();
 
         List<DialogInput> inputs = new ArrayList<>();
         inputs.add(DialogInput.text("name", GlobalTranslator.render(Component.translatable("editor.inputs.name"), player.locale()))
-                .initial(portalData.getId())
+                .initial(portalData.getName())
                 .build());
 
         // if there are no other available portals, we don't show the destination input
@@ -137,7 +137,7 @@ public class PlayerClickBlockListener implements Listener {
         }
 
         WorldDataContainer dataContainer = new WorldDataContainer(portalWorld);
-        TeleportPortalData portalData = dataContainer.getData(portalLocation);
+        PortalData portalData = dataContainer.getData(portalLocation);
 
         if (portalData == null) {
             LOGGER.warn("Player {} tried to save portal data, but it was not found at {}", player.getName(), portalLocation);
@@ -149,7 +149,7 @@ public class PlayerClickBlockListener implements Listener {
 
         // if the name is set, we update the portal's name
         if (newName != null && !newName.isBlank()) {
-            portalData.setId(newName);
+            portalData.setName(newName);
             player.sendMessage(Component.translatable("portals.data.updated.name", Component.text(newName)).color(NamedTextColor.GREEN));
         }
 
@@ -173,7 +173,7 @@ public class PlayerClickBlockListener implements Listener {
                 destinationDataContainer = new WorldDataContainer(newDestinationLocation.getWorld());
             }
 
-            TeleportPortalData destinationData = destinationDataContainer.getData(newDestinationLocation);
+            PortalData destinationData = destinationDataContainer.getData(newDestinationLocation);
             if (destinationData == null) {
                 throw new RuntimeException("Destination portal does not exist: " + newDestinationLocation);
             }
@@ -195,22 +195,22 @@ public class PlayerClickBlockListener implements Listener {
         player.sendMessage(Component.translatable("portals.data.updated").color(NamedTextColor.GREEN));
     }
 
-    private void updatePortalAnimations(@NotNull TeleportPortalData portal1, @NotNull TeleportPortalData portal2) {
+    private void updatePortalAnimations(@NotNull PortalData portal1, @NotNull PortalData portal2) {
         List<PortalDestinationAnimator> portal1DestinationAnimators = this.pluginInstance.getAnimatorsForPortal(portal1.getOrigin()).stream()
                 .filter(animator -> animator instanceof PortalDestinationAnimator)
                 .map(animator -> (PortalDestinationAnimator) animator)
                 .toList();
 
         if (portal1DestinationAnimators.isEmpty()) {
-            this.pluginInstance.registerAnimator(new PortalDestinationAnimator(this.pluginInstance, portal1.getOrigin(), portal2.getId()));
+            this.pluginInstance.registerAnimator(new PortalDestinationAnimator(this.pluginInstance, portal1.getOrigin(), portal2.getName()));
         } else {
             for (PortalDestinationAnimator destinationAnimator : portal1DestinationAnimators) {
-                destinationAnimator.setDestinationPortalId(portal2.getId());
+                destinationAnimator.setDestinationPortalId(portal2.getName());
             }
         }
     }
 
-    private void makePortalsAnimations(@NotNull TeleportPortalData portal1, @NotNull TeleportPortalData portal2) {
+    private void makePortalsAnimations(@NotNull PortalData portal1, @NotNull PortalData portal2) {
         this.updatePortalAnimations(portal1, portal2);
         this.updatePortalAnimations(portal2, portal1);
     }
