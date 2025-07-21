@@ -1,0 +1,9 @@
+name: "Portalify"
+version: "${version}"
+api-version: "1.21"
+main: dev.pelfox.portalify.Portalify
+load: POSTWORLD
+
+description: "A lightweight plugin that lets players create teleportation portals using End Portal Frames."
+author: "Pelfox"
+website: "https://github.com/Pelfox/Portalify"
